@@ -1,33 +1,6 @@
-<!doctype html>
-<html lang="uk">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f5f6f8"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Журнал тренувань">
-<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/icon-180.png"><link rel="stylesheet" href="styles.css"><title>Журнал тренувань</title>
-</head>
-<body>
-<header class="top"><div><div class="eyebrow">ЖУРНАЛ</div><h1>Тренування</h1></div><button id="installHint" class="icon" aria-label="Встановлення">⌂</button></header>
-<main>
-<section id="view-workouts" class="view active">
-  <div class="head"><h2>Тренування</h2><button id="addWorkout" class="primary">+ Тренування</button></div>
-  <div class="ready-head"><h3>Готові тренування</h3><span>8 програм</span></div>
-  <div id="templateList" class="template-grid"></div>
-  <div class="head week-head"><h2>Тиждень</h2></div>
-  <div class="weeknav"><button id="prevWeek">‹</button><b id="weekTitle"></b><button id="nextWeek">›</button></div>
-  <div id="weekList" class="week-list"></div>
-</section>
-<section id="view-exercises" class="view">
-  <div class="head"><h2>Вправи</h2><button id="addExercise" class="primary">+ Вправа</button></div>
-  <input id="exerciseSearch" class="input" placeholder="Пошук вправи">
-  <div id="exerciseList" class="stack"></div>
-</section>
-<section id="view-timers" class="view">
-  <div class="head"><h2>Таймери</h2><button id="soundToggle" class="secondary">Звук: Увімк.</button></div>
-  <div class="timer-tabs"><button data-timer="stopwatch" class="active">Етап</button><button data-timer="rest">Відпочинок</button><button data-timer="interval">Інтервали</button></div>
-  <div id="timerPanel"></div>
-</section>
-</main>
-<nav class="tabs"><button class="tab active" data-view="workouts">Тренування</button><button class="tab" data-view="exercises">Вправи</button><button class="tab" data-view="timers">Таймери</button></nav>
-<div id="modalRoot"></div><div id="toast" class="toast"></div>
-<script src="app.js"></script>
-</body></html>
+<!doctype html><html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#111827"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Журнал тренувань"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/icon-180.png"><link rel="stylesheet" href="styles.css"><title>Журнал тренувань</title></head><body><div id="app"><header class="top"><div><small>ЖУРНАЛ</small><h1>Тренування</h1></div><button id="installHint" class="icon">⌂</button></header><main>
+<section id="view-week" class="view active"><div class="head"><div><h2>Тиждень</h2><div class="meta">План тренувань за днями</div></div><button id="todayWeek" class="secondary small">Сьогодні</button></div><div id="weekNav" class="weeknav"><button id="prevWeek">‹</button><b id="weekTitle"></b><button id="nextWeek">›</button></div><div id="weekList" class="stack"></div></section>
+<section id="view-workouts" class="view"><div class="head"><div><h2>Тренування</h2><div class="meta">Готові комплекси та їхні параметри</div></div><button id="addWorkout" class="primary">+ Додати</button></div><div id="workoutList" class="stack"></div></section>
+<section id="view-exercises" class="view"><div class="head"><div><h2>Вправи</h2><div class="meta">Довідник вправ</div></div><button id="addExercise" class="primary">+ Додати</button></div><input id="exerciseSearch" class="input" placeholder="Пошук вправи"><div id="exerciseList" class="stack"></div></section>
+<section id="view-timers" class="view"><div class="head"><h2>Таймери</h2><button id="soundToggle" class="secondary">Звук: Вкл</button></div><div class="timer-tabs"><button data-timer="stopwatch" class="active">Етап</button><button data-timer="rest">Відпочинок</button><button data-timer="interval">Інтервали</button></div><div id="timerPanel"></div></section>
+</main><nav class="tabs"><button class="tab active" data-view="week">Тиждень</button><button class="tab" data-view="workouts">Тренування</button><button class="tab" data-view="exercises">Вправи</button><button class="tab" data-view="timers">Таймери</button></nav></div><div id="modalRoot"></div><div id="toast" class="toast"></div><script src="app.js"></script></body></html>
