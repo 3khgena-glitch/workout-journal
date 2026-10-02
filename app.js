@@ -33,7 +33,7 @@ function renderWorkouts(){
  const q=($("workoutSearch")?.value||"").trim().toLowerCase();
  const list=state.workouts.filter(w=>(w.name+" "+(w.note||"")).toLowerCase().includes(q)).map(w=>{
   const rows=(w.items||[]).map(it=>{const e=state.exercises.find(x=>x.id===it.exerciseId);return `<div class="training-item"><div class="training-ex-name">${esc(e?.name||"Вправа")}</div><div class="training-params">${esc(it.load||"Без ваги")} · ${esc(it.reps||"—")} повторів</div></div>`}).join("");
-  return `<div class="card training-card"><div class="training-head"><div><h3>${esc(w.name)}</h3>${w.note?`<div class="training-note">${esc(w.note)}</div>`:""}</div><div class="actions-inline"><button class="secondary small" data-a="editw" data-id="${w.id}">Змінити</button><button class="danger small" data-a="delw" data-id="${w.id}">Видалити</button></div></div><div class="training-items">${rows||'<div class="empty">Вправи не додані</div>'}</div></div>`
+  return `<div class="card training-card"><div class="training-head"><div><h3>${esc(w.name)}</h3>${w.note?`<div class="training-note">${esc(w.note)}</div>`:""}</div><div class="actions-inline"><button class="secondary small" data-a="editlib" data-id="${w.id}">Змінити</button><button class="danger small" data-a="dellib" data-id="${w.id}">Видалити</button></div></div><div class="training-items">${rows||'<div class="empty">Вправи не додані</div>'}</div></div>`
  }).join("");
  $("workoutList").innerHTML=list||'<div class="empty">Нічого не знайдено.</div>'
 }
@@ -101,5 +101,39 @@ function handleInterval(t){let sec=Math.max(0,Math.ceil((t.paused?t.remaining:t.
 // Rebind interval timer renderer to the timestamp-based state machine.
 const oldTimerRender=renderTimer;renderTimer=()=>{if(timerMode==="interval"&&timer?.kind==="interval")handleInterval(timer);else oldTimerRender()};
 window.addEventListener("pageshow",()=>{if(timer){if(timer.kind==="interval")handleInterval(timer);else renderCountdown(timer)}});window.addEventListener("visibilitychange",()=>{if(!document.hidden&&timer){if(timer.kind==="interval")handleInterval(timer);else renderCountdown(timer)}});
+
+let verifiedBackup=false;
+function exportData(){
+ const payload={format:"workout-journal",version:2,exportedAt:new Date().toISOString(),data:state};
+ const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="workout-journal-"+dateKey(new Date())+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+ toast("Резервну копію створено");
+}
+function verifyBackupFile(file){
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const x=JSON.parse(reader.result); const d=x?.data||x;
+   const ok=d&&Array.isArray(d.exercises)&&Array.isArray(d.workouts)&&Array.isArray(d.workoutsSchedule)&&Array.isArray(d.completions);
+   verifiedBackup=!!ok;
+   $("verifyStatus").textContent=ok?"Перевірка успішна: структура резервної копії коректна.":"Перевірка не пройдена: файл має неправильну структуру.";
+   $("clearData").disabled=!ok;
+  }catch(e){verifiedBackup=false;$("verifyStatus").textContent="Перевірка не пройдена: файл JSON пошкоджений.";$("clearData").disabled=true}
+ };
+ reader.readAsText(file);
+}
+$("exportData").onclick=exportData;
+$("importData").onclick=()=>$("importFile").click();
+$("importFile").onchange=e=>{const f=e.target.files?.[0];if(f)verifyBackupFile(f)};
+$("verifyData").onclick=()=>{
+ const json=localStorage.getItem(KEY);
+ if(!json){$("verifyStatus").textContent="На телефоні немає даних для перевірки.";return}
+ try{const d=JSON.parse(json);const ok=d&&Array.isArray(d.exercises)&&Array.isArray(d.workouts)&&Array.isArray(d.workoutsSchedule)&&Array.isArray(d.completions);verifiedBackup=!!ok;$("verifyStatus").textContent=ok?"Перевірка даних успішна.":"Перевірка не пройдена.";$("clearData").disabled=!ok}catch(e){verifiedBackup=false;$("verifyStatus").textContent="Перевірка не пройдена.";$("clearData").disabled=true}
+};
+$("clearData").onclick=()=>{
+ if(!verifiedBackup)return;
+ if(!confirm("Очистити всі дані на цьому телефоні? Рекомендується спочатку виконати експорт."))return;
+ localStorage.removeItem(KEY);localStorage.removeItem(OLD);location.reload();
+};
 if("serviceWorker" in navigator&&location.protocol==="https:")addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));renderWeek();renderMonth();renderWorkouts();
 })();
