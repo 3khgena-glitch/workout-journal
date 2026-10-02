@@ -116,7 +116,7 @@ function verifyBackupFile(file){
    const x=JSON.parse(reader.result); const d=x?.data||x;
    const ok=d&&Array.isArray(d.exercises)&&Array.isArray(d.workouts)&&Array.isArray(d.workoutsSchedule)&&Array.isArray(d.completions);
    verifiedBackup=!!ok;
-   $("verifyStatus").textContent=ok?"Перевірка успішна: структура резервної копії коректна.":"Перевірка не пройдена: файл має неправильну структуру.";
+   $("verifyStatus").textContent=ok?"Перевірка успішна: структура резервної копії коректна.":"Перевірка не пройдена: файл має неправильну структуру."; if(ok){state=normalize(d);save();renderWeek();renderMonth();renderWorkouts();renderExercises();toast("Дані імпортовано");}
    $("clearData").disabled=!ok;
   }catch(e){verifiedBackup=false;$("verifyStatus").textContent="Перевірка не пройдена: файл JSON пошкоджений.";$("clearData").disabled=true}
  };
